@@ -2,7 +2,8 @@
  * @author Josh Stuart <joshstuartx@gmail.com>.
  */
 
-var Q = require('q');
+var q = require('q');
+var _ = require('lodash');
 var config = require('../config');
 
 /**
@@ -16,14 +17,13 @@ function ConsumerManager() {
 
 ConsumerManager.prototype.getAllJobs = function () {
     var jobs = {};
-
-    for (jobName in config.jobs) {
+    _.forEach(config.jobs, function (job, jobName) {
         jobs[jobName] = {
             service: require('./' + jobName),
-            options: config.jobs[jobName],
+            options: job,
             lastRun: null
         };
-    }
+    });
 
     return jobs;
 };
@@ -31,22 +31,21 @@ ConsumerManager.prototype.getAllJobs = function () {
 ConsumerManager.prototype.run = function () {
     var deferreds = [];
 
-    for (jobName in this.jobs) {
-        var job = this.jobs[jobName];
-
+    _.forEach(this.jobs, function (job, jobName) {
         if (canDoRun(job.lastRun, job.options.runEvery)) {
-            var deferred = Q.defer();
+            var deferred = q.defer();
             deferreds.push(deferred);
 
             var lastRun = new Date();
+            console.log('Running job: ' + jobName);
             job.service.run(lastRun).then(function (r) {
                 job.lastRun = lastRun;
                 deferred.resolve();
             });
         }
-    }
+    });
 
-    return Q.all(deferreds);
+    return q.all(deferreds);
 };
 
 function canDoRun(lastRun, runEvery) {

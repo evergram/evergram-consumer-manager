@@ -17,7 +17,7 @@ function run() {
     consumerManager.run().then(function () {
         log('Complete: ');
         setTimeout(run, (config.runEvery * 1000));
-        log('Waiting '+ config.runEvery + ' seconds :');
+        log('Waiting: ' + config.runEvery + ' seconds');
     });
 }
 

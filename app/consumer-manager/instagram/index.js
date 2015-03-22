@@ -2,7 +2,8 @@
  * @author Josh Stuart <joshstuartx@gmail.com>.
  */
 
-var Q = require('q');
+var q = require('q');
+var _ = require('lodash');
 var common = require('evergram-common');
 var aws = common.aws;
 var userManager = common.user.manager;
@@ -22,16 +23,16 @@ function InstagramConsumerManager() {
  * @param lastRun
  */
 InstagramConsumerManager.prototype.run = function (runOn) {
-    var deferred = Q.defer();
+    var deferred = q.defer();
 
     getUsers(runOn).then(function (users) {
         var deferreds = [];
 
-        for (var i in users) {
-            deferreds.push(addUserToQueue(users[i]));
-        }
+        _.forEach(users, function (user) {
+            deferreds.push(addUserToQueue(user));
+        });
 
-        Q.all(deferreds).then(function () {
+        q.all(deferreds).then(function () {
             deferred.resolve(users);
         });
     });
@@ -46,7 +47,7 @@ InstagramConsumerManager.prototype.run = function (runOn) {
  * @returns {*}
  */
 function addUserToQueue(user) {
-    var deferred = Q.defer();
+    var deferred = q.defer();
 
     aws.sqs.createMessage(aws.sqs.QUEUES.INSTAGRAM, '{"id": "' + user._id + '"}').then(function () {
         user.jobs.instagram.inQueue = true;
@@ -66,15 +67,16 @@ function addUserToQueue(user) {
  * Gets users depending on the last run date/time
  *
  * @param runOn
- * @returns {promise|*|Q.promise}
+ * @returns {promise|*|q.promise}
  */
 function getUsers(runOn) {
+    console.log('INSTAGRAM:', runOn);
     return userManager.findUsers({
         criteria: {
             '$or': [
                 {
-                    'jobs.instagram.lastRunOn': {
-                        '$gte': runOn
+                    'jobs.instagram.nextRunOn': {
+                        '$lte': runOn
                     },
                     'jobs.instagram.inQueue': false,
                     'active': true
