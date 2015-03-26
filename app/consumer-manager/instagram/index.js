@@ -70,8 +70,7 @@ function addUserToQueue(user) {
  * @returns {promise|*|q.promise}
  */
 function getUsers(runOn) {
-    console.log('INSTAGRAM:', runOn);
-    return userManager.findUsers({
+    return userManager.findAll({
         criteria: {
             '$or': [
                 {
