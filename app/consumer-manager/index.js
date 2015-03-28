@@ -5,6 +5,7 @@
 var q = require('q');
 var _ = require('lodash');
 var config = require('../config');
+var logger = require('evergram-common').utils.logger;
 
 /**
  * A consumer manager that handles all of the consumers
@@ -34,10 +35,10 @@ ConsumerManager.prototype.run = function () {
     _.forEach(this.jobs, function (job, jobName) {
         if (canDoRun(job.lastRun, job.options.runEvery)) {
             var deferred = q.defer();
-            deferreds.push(deferred);
+            deferreds.push(deferred.promise);
 
             var lastRun = new Date();
-            console.log('Running job: ' + jobName);
+            logger.info('Running ' + jobName + ' job which was last run on ' + lastRun);
             job.service.run(lastRun).then(function (r) {
                 job.lastRun = lastRun;
                 deferred.resolve();
