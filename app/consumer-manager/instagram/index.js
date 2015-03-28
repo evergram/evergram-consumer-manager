@@ -5,6 +5,7 @@
 var q = require('q');
 var _ = require('lodash');
 var common = require('evergram-common');
+var logger = common.utils.logger;
 var aws = common.aws;
 var userManager = common.user.manager;
 
@@ -26,6 +27,12 @@ InstagramConsumerManager.prototype.run = function (runOn) {
     var deferred = q.defer();
 
     getUsers(runOn).then(function (users) {
+        if (users.length > 0) {
+            logger.info('Adding ' + users.length + ' instagram consumer messages to the queue');
+        } else {
+            logger.info('No users added to the queue');
+        }
+
         var deferreds = [];
 
         _.forEach(users, function (user) {
