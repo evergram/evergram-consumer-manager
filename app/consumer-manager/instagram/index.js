@@ -28,9 +28,9 @@ InstagramConsumerManager.prototype.run = function (runOn) {
 
     getUsers(runOn).then(function (users) {
         if (users.length > 0) {
-            logger.info('Adding ' + users.length + ' instagram consumer messages to the queue');
+            logger.info('Adding ' + users.length + ' messages to the instagram queue');
         } else {
-            logger.info('No users added to the queue');
+            logger.info('No users added to the instagram queue');
         }
 
         var deferreds = [];
@@ -85,6 +85,9 @@ function getUsers(runOn) {
                         '$lte': runOn
                     },
                     'jobs.instagram.inQueue': false,
+                    'instagram.authToken': {
+                        '$exists': true
+                    },
                     'active': true
                 },
                 {
@@ -92,6 +95,9 @@ function getUsers(runOn) {
                         '$exists': false
                     },
                     'jobs.instagram.inQueue': false,
+                    'instagram.authToken': {
+                        '$exists': true
+                    },
                     'active': true
                 }
             ]
