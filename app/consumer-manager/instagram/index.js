@@ -85,6 +85,9 @@ function getUsers(runOn) {
                         '$lte': runOn
                     },
                     'jobs.instagram.inQueue': false,
+                    'instagram.authToken': {
+                        '$exists': true
+                    },
                     'active': true
                 },
                 {
@@ -92,6 +95,9 @@ function getUsers(runOn) {
                         '$exists': false
                     },
                     'jobs.instagram.inQueue': false,
+                    'instagram.authToken': {
+                        '$exists': true
+                    },
                     'active': true
                 }
             ]
