@@ -28,9 +28,9 @@ PrintConsumerManager.prototype.run = function () {
 
     getPrintableImageSets().then(function (imageSets) {
         if (imageSets.length > 0) {
-            logger.info('Adding ' + imageSets.length + ' printable consumer messages to the queue');
+            logger.info('Adding ' + imageSets.length + ' messages to the print queue');
         } else {
-            logger.info('No image sets added to the queue');
+            logger.info('No image sets added to the print queue');
         }
 
         var deferreds = [];
@@ -78,8 +78,7 @@ function getPrintableImageSets() {
         criteria: {
             isReadyForPrint: true,
             isPrinted: false,
-            inQueue: false,
-            active: true
+            inQueue: false
         }
     });
 }
