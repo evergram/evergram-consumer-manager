@@ -4,6 +4,7 @@
 
 var q = require('q');
 var _ = require('lodash');
+var moment = require('moment');
 var config = require('../config');
 var logger = require('evergram-common').utils.logger;
 
@@ -54,8 +55,8 @@ function canDoRun(lastRun, runEvery) {
         return true;
     } else {
         lastRun = new Date(lastRun);
-        var runOn = lastRun.setSeconds(lastRun.getSeconds() + runEvery);
-        return runOn <= new Date();
+        var runOn = moment(lastRun).add(runEvery, 'seconds');
+        return runOn.isBefore(new Date());
     }
 }
 
