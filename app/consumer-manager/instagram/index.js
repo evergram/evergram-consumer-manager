@@ -6,7 +6,7 @@ var q = require('q');
 var _ = require('lodash');
 var common = require('evergram-common');
 var logger = common.utils.logger;
-var aws = common.aws;
+var sqs = common.aws.sqs;
 var userManager = common.user.manager;
 
 /**
@@ -56,16 +56,14 @@ InstagramConsumerManager.prototype.run = function (runOn) {
 function addUserToQueue(user) {
     var deferred = q.defer();
 
-    aws.sqs.createMessage(aws.sqs.QUEUES.INSTAGRAM, '{"id": "' + user._id + '"}').then(function () {
+    sqs.createMessage(sqs.QUEUES.INSTAGRAM, '{"id": "' + user._id + '"}').then(function () {
         user.jobs.instagram.inQueue = true;
-        user.save(function (err, user) {
-            if (!err) {
-                deferred.resolve(user);
-            } else {
-                deferred.reject(err);
-            }
-        });
-    });
+        return q.ninvoke(user, 'save');
+    }).then(function () {
+        deferred.resolve(user);
+    }).fail(function (err) {
+        deferred.reject(err);
+    }).done();
 
     return deferred.promise;
 }
