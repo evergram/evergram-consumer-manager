@@ -9,10 +9,10 @@ module.exports = {
     runEvery: process.env.CONSUMER_MANAGER_RUN_EVERY || 60, // Run the manager every x seconds
     jobs: {
         instagram: {
-            runEvery: process.env.INSTAGRAM_CONSUMER_MANAGER_RUN_EVERY || (60 * 60) //seconds
+            runEvery: process.env.INSTAGRAM_CONSUMER_MANAGER_RUN_EVERY || 60 //seconds
         },
         print: {
-            runEvery: process.env.PRINT_CONSUMER_MANAGER_RUN_EVERY || (60 * 60) //seconds
+            runEvery: process.env.PRINT_CONSUMER_MANAGER_RUN_EVERY || 60 //seconds
         }
     }
 };
