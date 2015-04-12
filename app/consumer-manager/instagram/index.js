@@ -41,8 +41,12 @@ InstagramConsumerManager.prototype.run = function (runOn) {
 
         q.all(deferreds).then(function () {
             deferred.resolve(users);
-        });
-    });
+        }).fail(function (err) {
+            deferred.reject(err);
+        }).done();
+    }).fail(function (err) {
+        deferred.reject(err);
+    }).done();
 
     return deferred.promise;
 };
@@ -75,6 +79,7 @@ function addUserToQueue(user) {
  * @returns {promise|*|q.promise}
  */
 function getUsers(runOn) {
+    logger.info('Getting users for instagram queue');
     return userManager.findAll({
         criteria: {
             '$or': [

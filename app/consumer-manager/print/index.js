@@ -41,8 +41,12 @@ PrintConsumerManager.prototype.run = function () {
 
         q.all(deferreds).then(function () {
             deferred.resolve(imageSets);
-        });
-    });
+        }).fail(function (err) {
+            deferred.reject(err);
+        }).done();
+    }).fail(function (err) {
+        deferred.reject(err);
+    }).done();
 
     return deferred.promise;
 };
@@ -56,13 +60,19 @@ PrintConsumerManager.prototype.run = function () {
 function addImageSetToQueue(imageSet) {
     var deferred = q.defer();
 
+    logger.info('Adding ' + imageSet._id + ' to the print queue');
+
     sqs.createMessage(sqs.QUEUES.PRINT, '{"id": "' + imageSet._id + '"}').then(function () {
         imageSet.inQueue = true;
         printManager.save(imageSet).
         then(function () {
             deferred.resolve(imageSet);
-        });
-    });
+        }).fail(function (err) {
+            deferred.reject(err);
+        }).done();
+    }).fail(function (err) {
+        deferred.reject(err);
+    }).done();
 
     return deferred.promise;
 }
@@ -74,6 +84,8 @@ function addImageSetToQueue(imageSet) {
  * @returns {promise|*|q.promise}
  */
 function getPrintableImageSets() {
+    logger.info('Getting image sets for print queue');
+
     return printManager.findAll({
         criteria: {
             isReadyForPrint: true,
