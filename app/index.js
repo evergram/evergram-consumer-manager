@@ -19,7 +19,11 @@ function run() {
         logger.info('Completed running jobs');
         setTimeout(run, (config.runEvery * 1000));
         logger.info('Waiting ' + config.runEvery + ' seconds before we run jobs again');
-    });
+    }).fail(function (err) {
+        setTimeout(run, (config.runEvery * 1000));
+        logger.info('Waiting ' + config.runEvery + ' seconds before we run jobs again');
+        logger.error(err);
+    }).done();
 }
 
 run();

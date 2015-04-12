@@ -43,7 +43,9 @@ ConsumerManager.prototype.run = function () {
             job.service.run(lastRun).then(function (r) {
                 job.lastRun = lastRun;
                 deferred.resolve();
-            });
+            }).fail(function (err) {
+                deferred.reject(err);
+            }).done();
         }
     });
 
