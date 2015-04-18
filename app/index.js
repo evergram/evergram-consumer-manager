@@ -15,6 +15,7 @@ common.db.connect();
  */
 function run() {
     logger.info('Running jobs');
+
     consumerManager.run().then(function () {
         logger.info('Completed running jobs');
         setTimeout(run, (config.runEvery * 1000));
