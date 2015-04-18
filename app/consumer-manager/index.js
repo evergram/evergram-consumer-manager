@@ -4,6 +4,7 @@
 
 var q = require('q');
 var _ = require('lodash');
+var newrelic = require('newrelic');
 var moment = require('moment');
 var config = require('../config');
 var logger = require('evergram-common').utils.logger;
@@ -40,10 +41,12 @@ ConsumerManager.prototype.run = function () {
 
             var lastRun = new Date();
             logger.info('Running ' + jobName + ' job which was last run on ' + lastRun);
-            job.service.run(lastRun).then(function (r) {
+            job.service.run(lastRun).then(newrelic.createBackgroundTransaction('jobs:' + jobName, function () {
                 job.lastRun = lastRun;
+                newrelic.endTransaction();
                 deferred.resolve();
-            }).fail(function (err) {
+            })).fail(function (err) {
+                newrelic.endTransaction();
                 deferred.reject(err);
             }).done();
         }
