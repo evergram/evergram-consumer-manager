@@ -3,13 +3,23 @@
  */
 
 module.exports = {
-    runEvery: 60, // Run the manager every x seconds
+    // Run the manager every x seconds
+    runEvery: 60,
     jobs: {
         instagram: {
-            runEvery: 60 //seconds
+            //seconds
+            runEvery: 60
         },
         print: {
-            runEvery: 60 //seconds
+            //seconds
+            runEvery: 60
+        },
+        cleanup: {
+            //seconds
+            runEvery: 60,
+
+            //10 mins
+            delta: 60 * 10
         }
     }
 };

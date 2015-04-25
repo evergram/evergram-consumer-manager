@@ -16,11 +16,11 @@ common.db.connect();
 function run() {
     logger.info('Running jobs');
 
-    consumerManager.run().then(function () {
+    consumerManager.run().then(function() {
         logger.info('Completed running jobs');
         setTimeout(run, (config.runEvery * 1000));
         logger.info('Waiting ' + config.runEvery + ' seconds before we run jobs again');
-    }).fail(function (err) {
+    }).fail(function(err) {
         setTimeout(run, (config.runEvery * 1000));
         logger.info('Waiting ' + config.runEvery + ' seconds before we run jobs again');
         logger.error(err);

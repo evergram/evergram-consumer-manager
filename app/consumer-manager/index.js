@@ -18,9 +18,9 @@ function ConsumerManager() {
     this.jobs = this.getAllJobs();
 }
 
-ConsumerManager.prototype.getAllJobs = function () {
+ConsumerManager.prototype.getAllJobs = function() {
     var jobs = {};
-    _.forEach(config.jobs, function (job, jobName) {
+    _.forEach(config.jobs, function(job, jobName) {
         jobs[jobName] = {
             service: require('./' + jobName),
             options: job,
@@ -31,24 +31,27 @@ ConsumerManager.prototype.getAllJobs = function () {
     return jobs;
 };
 
-ConsumerManager.prototype.run = function () {
+ConsumerManager.prototype.run = function() {
     var deferreds = [];
 
-    _.forEach(this.jobs, function (job, jobName) {
+    _.forEach(this.jobs, function(job, jobName) {
         if (canDoRun(job.lastRun, job.options.runEvery)) {
             var deferred = q.defer();
             deferreds.push(deferred.promise);
 
             var lastRun = new Date();
             logger.info('Running ' + jobName + ' job which was last run on ' + lastRun);
-            job.service.run(lastRun).then(newrelic.createBackgroundTransaction('jobs:' + jobName, function () {
-                job.lastRun = lastRun;
-                newrelic.endTransaction();
-                deferred.resolve();
-            })).fail(function (err) {
-                newrelic.endTransaction();
-                deferred.reject(err);
-            }).done();
+
+            job.service.run(lastRun).
+                then(newrelic.createBackgroundTransaction('jobs:' + jobName, function() {
+                    job.lastRun = lastRun;
+                    newrelic.endTransaction();
+                    deferred.resolve();
+                })).
+                fail(function(err) {
+                    newrelic.endTransaction();
+                    deferred.reject(err);
+                }).done();
         }
     });
 
@@ -56,7 +59,7 @@ ConsumerManager.prototype.run = function () {
 };
 
 function canDoRun(lastRun, runEvery) {
-    if (lastRun == null) {
+    if (lastRun === null) {
         return true;
     } else {
         lastRun = new Date(lastRun);
@@ -69,4 +72,4 @@ function canDoRun(lastRun, runEvery) {
  * Expose
  * @type {ConsumerService}
  */
-module.exports = exports = new ConsumerManager;
+module.exports = exports = new ConsumerManager();

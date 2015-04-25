@@ -23,32 +23,23 @@ function PrintConsumerManager() {
  *
  * @param lastRun
  */
-PrintConsumerManager.prototype.run = function () {
-    var deferred = q.defer();
+PrintConsumerManager.prototype.run = function() {
+    return getPrintableImageSets().
+        then(function(imageSets) {
+            if (imageSets.length > 0) {
+                logger.info('Adding ' + imageSets.length + ' messages to the print queue');
+            } else {
+                logger.info('No image sets added to the print queue');
+            }
 
-    getPrintableImageSets().then(function (imageSets) {
-        if (imageSets.length > 0) {
-            logger.info('Adding ' + imageSets.length + ' messages to the print queue');
-        } else {
-            logger.info('No image sets added to the print queue');
-        }
+            var deferreds = [];
 
-        var deferreds = [];
+            _.forEach(imageSets, function(imageSet) {
+                deferreds.push(addImageSetToQueue(imageSet));
+            });
 
-        _.forEach(imageSets, function (imageSet) {
-            deferreds.push(addImageSetToQueue(imageSet));
+            return q.all(deferreds);
         });
-
-        q.all(deferreds).then(function () {
-            deferred.resolve(imageSets);
-        }).fail(function (err) {
-            deferred.reject(err);
-        }).done();
-    }).fail(function (err) {
-        deferred.reject(err);
-    }).done();
-
-    return deferred.promise;
 };
 
 /**
@@ -58,23 +49,13 @@ PrintConsumerManager.prototype.run = function () {
  * @returns {*}
  */
 function addImageSetToQueue(imageSet) {
-    var deferred = q.defer();
-
     logger.info('Adding ' + imageSet._id + ' to the print queue');
 
-    sqs.createMessage(sqs.QUEUES.PRINT, '{"id": "' + imageSet._id + '"}').then(function () {
-        imageSet.inQueue = true;
-        printManager.save(imageSet).
-        then(function () {
-            deferred.resolve(imageSet);
-        }).fail(function (err) {
-            deferred.reject(err);
-        }).done();
-    }).fail(function (err) {
-        deferred.reject(err);
-    }).done();
-
-    return deferred.promise;
+    return sqs.createMessage(sqs.QUEUES.PRINT, '{"id": "' + imageSet._id + '"}').
+        then(function() {
+            imageSet.inQueue = true;
+            return printManager.save(imageSet);
+        });
 }
 
 /**
@@ -99,4 +80,4 @@ function getPrintableImageSets() {
  * Expose
  * @type {PrintConsumerManager}
  */
-module.exports = exports = new PrintConsumerManager;
+module.exports = exports = new PrintConsumerManager();
