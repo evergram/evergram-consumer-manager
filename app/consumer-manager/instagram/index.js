@@ -19,36 +19,27 @@ function InstagramConsumerManager() {
 }
 
 /**
- * Runs the consumer manager.
+ * Runs the print consumer manager.
  *
  * @param lastRun
  */
-InstagramConsumerManager.prototype.run = function (runOn) {
-    var deferred = q.defer();
+InstagramConsumerManager.prototype.run = function(runOn) {
+    return getUsers(runOn).
+        then(function(users) {
+            if (users.length > 0) {
+                logger.info('Adding ' + users.length + ' messages to the instagram queue');
+            } else {
+                logger.info('No users added to the instagram queue');
+            }
 
-    getUsers(runOn).then(function (users) {
-        if (users.length > 0) {
-            logger.info('Adding ' + users.length + ' messages to the instagram queue');
-        } else {
-            logger.info('No users added to the instagram queue');
-        }
+            var deferreds = [];
 
-        var deferreds = [];
+            _.forEach(users, function(user) {
+                deferreds.push(addUserToQueue(user));
+            });
 
-        _.forEach(users, function (user) {
-            deferreds.push(addUserToQueue(user));
+            return q.all(deferreds);
         });
-
-        q.all(deferreds).then(function () {
-            deferred.resolve(users);
-        }).fail(function (err) {
-            deferred.reject(err);
-        }).done();
-    }).fail(function (err) {
-        deferred.reject(err);
-    }).done();
-
-    return deferred.promise;
 };
 
 /**
@@ -58,18 +49,10 @@ InstagramConsumerManager.prototype.run = function (runOn) {
  * @returns {*}
  */
 function addUserToQueue(user) {
-    var deferred = q.defer();
-
-    sqs.createMessage(sqs.QUEUES.INSTAGRAM, '{"id": "' + user._id + '"}').then(function () {
+    return sqs.createMessage(sqs.QUEUES.INSTAGRAM, '{"id": "' + user._id + '"}').then(function() {
         user.jobs.instagram.inQueue = true;
         return q.ninvoke(user, 'save');
-    }).then(function () {
-        deferred.resolve(user);
-    }).fail(function (err) {
-        deferred.reject(err);
-    }).done();
-
-    return deferred.promise;
+    });
 }
 
 /**
@@ -82,26 +65,26 @@ function getUsers(runOn) {
     logger.info('Getting users for instagram queue');
     return userManager.findAll({
         criteria: {
-            '$or': [
+            $or: [
                 {
                     'jobs.instagram.nextRunOn': {
-                        '$lte': runOn
+                        $lte: runOn
                     },
                     'jobs.instagram.inQueue': false,
                     'instagram.authToken': {
-                        '$exists': true
+                        $exists: true
                     },
-                    'active': true
+                    active: true
                 },
                 {
                     'jobs.instagram.lastRunOn': {
-                        '$exists': false
+                        $exists: false
                     },
                     'jobs.instagram.inQueue': false,
                     'instagram.authToken': {
-                        '$exists': true
+                        $exists: true
                     },
-                    'active': true
+                    active: true
                 }
             ]
         }
@@ -112,4 +95,4 @@ function getUsers(runOn) {
  * Expose
  * @type {InstagramConsumerManager}
  */
-module.exports = exports = new InstagramConsumerManager;
+module.exports = exports = new InstagramConsumerManager();

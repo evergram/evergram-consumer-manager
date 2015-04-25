@@ -21,5 +21,7 @@ exports.config = {
          * production applications.
          */
         level: 'trace'
-    }
+    },
+    enabled: !!process.env.NEW_RELIC_LICENSE_KEY,
+    tracer_enabled: !!process.env.NEW_RELIC_LICENSE_KEY
 }

@@ -4,15 +4,27 @@
 
 module.exports = {
     sqs: {
-        waitTime: process.env.SQS_WAIT_TIME || 20 //seconds
+        //seconds
+        waitTime: process.env.SQS_WAIT_TIME || 20
     },
-    runEvery: process.env.CONSUMER_MANAGER_RUN_EVERY || 60, // Run the manager every x seconds
+
+    // Run the manager every x seconds
+    runEvery: process.env.CONSUMER_MANAGER_RUN_EVERY || 60,
     jobs: {
         instagram: {
-            runEvery: process.env.INSTAGRAM_CONSUMER_MANAGER_RUN_EVERY || 60 //seconds
+            //seconds
+            runEvery: process.env.INSTAGRAM_CONSUMER_MANAGER_RUN_EVERY || 60
         },
         print: {
-            runEvery: process.env.PRINT_CONSUMER_MANAGER_RUN_EVERY || 60 //seconds
+            //seconds
+            runEvery: process.env.PRINT_CONSUMER_MANAGER_RUN_EVERY || 60
+        },
+        cleanup: {
+            //seconds
+            runEvery: process.env.CLEANUP_CONSUMER_MANAGER_RUN_EVERY || 60,
+
+            //1 hr
+            delta: process.env.CLEANUP_CONSUMER_MANAGER_DELTA || 60 * 60
         }
     }
 };
