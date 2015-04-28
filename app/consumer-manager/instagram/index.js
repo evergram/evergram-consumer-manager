@@ -51,7 +51,7 @@ InstagramConsumerManager.prototype.run = function(runOn) {
 function addUserToQueue(user) {
     return sqs.createMessage(sqs.QUEUES.INSTAGRAM, '{"id": "' + user._id + '"}').then(function() {
         user.jobs.instagram.inQueue = true;
-        return q.ninvoke(user, 'save');
+        return userManager.update(user);
     });
 }
 
