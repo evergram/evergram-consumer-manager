@@ -74,6 +74,7 @@ function getUsers(runOn) {
                     'instagram.authToken': {
                         $exists: true
                     },
+                    signupComplete: true,
                     active: true
                 },
                 {
@@ -84,6 +85,7 @@ function getUsers(runOn) {
                     'instagram.authToken': {
                         $exists: true
                     },
+                    signupComplete: true,
                     active: true
                 }
             ]
