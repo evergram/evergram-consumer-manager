@@ -1,5 +1,7 @@
 #Evergram Consumer Manager
 
+[![Shippable](https://img.shields.io/shippable/557f6f2fedd7f2c052192759.svg)](https://app.shippable.com/projects/557f6f2fedd7f2c052192759)
+
 Manages all the Evergram consumer jobs and queues.
 
 ###Install Node.JS
