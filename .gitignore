@@ -1,6 +1,6 @@
 /node_modules/
 /tmp/
 *.iml
-*.log
 shippable
 xunit.xml
+/dist

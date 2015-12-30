@@ -3,7 +3,7 @@ language: node_js
 
 # Version number
 node_js:
-  - 0.10.38
+  - 0.12
 
 # Mongo binds to 127.0.0.1 by default
 services:
@@ -23,5 +23,4 @@ script:
   - npm test
 
 after_script:
-  - ./node_modules/.bin/istanbul report cobertura --dir shippable/codecoverage
   - mongo test --eval "db.dropDatabase()"

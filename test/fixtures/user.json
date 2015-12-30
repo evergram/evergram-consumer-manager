@@ -1,0 +1,31 @@
+{
+    "_id": "5556e7abdf503b0405c825dd",
+    "instagram": {
+        "follows": 45,
+        "followers": 215,
+        "media": 9,
+        "profilePicture": "",
+        "website": "",
+        "bio": "",
+        "authToken": "54717558.2b56993.5f079d1399b24c9db56603e0a0166a6d",
+        "username": "joshystuart",
+        "id": "54717558"
+    },
+    "billing": {
+        "option": "PAYG",
+        "stripeId": "cus_6FU1JcEiedYwIZ"
+    },
+    "address": {
+        "line1": "112/88 Trenerry Crescent",
+        "line2": "",
+        "suburb": "Abbotsford",
+        "state": "VIC",
+        "postcode": "3067",
+        "country": "Australia"
+    },
+    "email": "joshstuartx@gmail.com",
+    "lastName": "Stuart",
+    "firstName": "Josh",
+    "signupComplete": true,
+    "active": true
+}
