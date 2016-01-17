@@ -6,6 +6,7 @@
     "isPaid": false,
     "isPrinted": false,
     "isReadyForPrint": false,
+    "inQueue": false,
     "images": {
         "instagram": [
             {

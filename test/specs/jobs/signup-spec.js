@@ -40,7 +40,7 @@ describe('Signup Job', function() {
         });
     });
 
-    it('should create a the first image set for a newly signed up user', function(done) {
+    it('should create an image set for a newly signed up user', function(done) {
         let user;
         const userFixture = fixtureHelper.getUserFixture();
         userFixture.signupCompletedOn = moment().subtract(30, 'seconds');

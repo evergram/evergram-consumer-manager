@@ -12,14 +12,16 @@
     "node": "0.12.00"
   },
   "scripts": {
-    "compile": "babel ./server.js --out-dir ./dist && babel ./lib --out-dir ./dist/lib",
+    "build-server": "babel ./lib --out-dir ./dist/lib",
+    "build": "npm run clean && npm run build-server",
+    "clean": "rm -rf ./dist && mkdir ./dist",
     "lint": "./node_modules/.bin/eslint ./server.js ./lib ./test",
     "pretest": "npm run-script lint",
     "test": "NODE_ENV=test babel-node ./node_modules/istanbul/lib/cli cover --report cobertura --dir shippable/codecoverage ./node_modules/.bin/_mocha",
     "start": "NODE_ENV=development ./node_modules/.bin/nodemon server.js"
   },
   "dependencies": {
-    "evergram-common": "git+ssh://git@github.com:evergram/evergram-common.git#master",
+    "evergram-common": "git+ssh://git@github.com:evergram/evergram-common.git#develop",
     "lodash": "^3.10.1",
     "moment": "^2.10.0",
     "q": "^1.4.1"
