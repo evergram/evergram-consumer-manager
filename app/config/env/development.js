@@ -21,5 +21,8 @@ module.exports = {
             //10 mins
             delta: 60 * 10
         }
+    },
+    email: {
+        dev: 'dev@printwithpixy.com'
     }
 };

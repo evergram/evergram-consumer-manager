@@ -26,5 +26,8 @@ module.exports = {
             //1 hr
             delta: process.env.CLEANUP_CONSUMER_MANAGER_DELTA || 60 * 60
         }
+    },
+    email: {
+        dev: process.env.CONSUMER_MANAGER_DEV_NOTIFICATION_EMAIL || 'dev@printwithpixy.com'
     }
 };
