@@ -8,7 +8,7 @@ module.exports = {
     jobs: {
         instagram: {
             //seconds
-            runEvery: 60
+            runEvery: 5
         },
         print: {
             //seconds
