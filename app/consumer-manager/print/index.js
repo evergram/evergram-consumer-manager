@@ -5,6 +5,7 @@
 var q = require('q');
 var _ = require('lodash');
 var common = require('evergram-common');
+var moment = require('moment');
 var logger = common.utils.logger;
 var sqs = common.aws.sqs;
 var printManager = common.print.manager;
@@ -43,7 +44,7 @@ PrintConsumerManager.prototype.run = function() {
 };
 
 /**
- * Adds a user to the instagram queue
+ * Adds a user to the print queue
  *
  * @param user
  * @returns {*}
@@ -67,13 +68,35 @@ function addImageSetToQueue(imageSet) {
 function getPrintableImageSets() {
     logger.info('Getting image sets for print queue');
 
+    // look for anything with a end date before midnight tonight & not yet printed
+    var to = moment()
+                    .hours(0)
+                    .minutes(0)
+                    .seconds(0)
+                    .add(1,'days')
+                    .toDate();
+
+    var from = moment()
+                    .hours(0)
+                    .minutes(0)
+                    .seconds(0)
+                    .subtract(1,'months')
+                    .toDate();
+
+    logger.info("Dates from " + from + ", to " + to);
+
     return printManager.findAll({
-        criteria: {
-            isReadyForPrint: true,
-            isPrinted: false,
-            inQueue: false
+        criteria: { 
+            "startDate": { "$gt": from },
+            "endDate": { "$lt": to },
+            "isPrinted": false, 
+            "inQueue": false,
+            "$or" : [
+                { "images.instagram.1": { $exists: true } },
+                { "images.facebook.1": { $exists: true } }
+             ]
         }
-    });
+    })
 }
 
 /**
