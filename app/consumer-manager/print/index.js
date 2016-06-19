@@ -91,6 +91,7 @@ function getPrintableImageSets() {
             "endDate": { "$lt": to },
             "isPrinted": false, 
             "inQueue": false,
+            "user.billing.option" : { "$ne" : "INACTIVE" },
             "$or" : [
                 { "images.instagram.1": { $exists: true } },
                 { "images.facebook.1": { $exists: true } }
