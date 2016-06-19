@@ -74,6 +74,7 @@ function getUsers(runOn) {
                     'instagram.authToken': {
                         $exists: true
                     },
+                    "billing.option" : { "$ne" : "INACTIVE" },
                     signupComplete: true,
                     active: true
                 },
@@ -85,6 +86,7 @@ function getUsers(runOn) {
                     'instagram.authToken': {
                         $exists: true
                     },
+                    "billing.option" : { "$ne" : "INACTIVE" },
                     signupComplete: true,
                     active: true
                 }
