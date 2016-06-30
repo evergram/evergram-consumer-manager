@@ -93,8 +93,8 @@ function getPrintableImageSets() {
             "inQueue": false,
             "user.billing.option" : { "$ne" : "INACTIVE" },
             "$or" : [
-                { "images.instagram.1": { $exists: true } },
-                { "images.facebook.1": { $exists: true } }
+                { "images.instagram.0": { $exists: true } },
+                { "images.facebook.0": { $exists: true } }
              ]
         }
     })
