@@ -52,7 +52,17 @@ PrintConsumerManager.prototype.run = function() {
 function addImageSetToQueue(imageSet) {
     logger.info('Adding ' + imageSet._id + ' to the print queue');
 
-    return sqs.createMessage(sqs.QUEUES.PRINT, '{"id": "' + imageSet._id + '"}').
+    var queueMsg;
+
+    if (imageSet.images.instagram.length > 0) {
+        logger.info('Imageset ' + imageSet._id + ' has photos');
+        queueMsg = '{"id": "' + imageSet._id + '", "hasPhotos": "true"}';
+    } else {
+        logger.info('Imageset ' + imageSet._id + ' doesn\'t have photos');
+        queueMsg = '{"id": "' + imageSet._id + '", "hasPhotos": "false"}';
+    }
+
+    return sqs.createMessage(sqs.QUEUES.PRINT, queueMsg).
         then(function() {
             imageSet.inQueue = true;
             return printManager.save(imageSet);
@@ -91,6 +101,16 @@ function getPrintableImageSets() {
             "endDate": { "$lt": to },
             "isPrinted": false, 
             "inQueue": false,
+            "user.billing.option" : { "$ne" : "INACTIVE" }
+        }
+    })
+    /*
+    return printManager.findAll({
+        criteria: { 
+            "startDate": { "$gt": from },
+            "endDate": { "$lt": to },
+            "isPrinted": false, 
+            "inQueue": false,
             "user.billing.option" : { "$ne" : "INACTIVE" },
             "$or" : [
                 { "images.instagram.0": { $exists: true } },
@@ -98,6 +118,7 @@ function getPrintableImageSets() {
              ]
         }
     })
+    */
 }
 
 /**
